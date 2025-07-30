@@ -1,4 +1,5 @@
 package com.almuheetu.todoapp
+
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -38,6 +39,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.material.Card
 import androidx.compose.material.DrawerValue
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.FloatingActionButton
@@ -58,6 +60,7 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.rememberDrawerState
 import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
@@ -287,7 +290,10 @@ fun ToDoAppContent(viewModel: TodoViewModel, onLogout: () -> Unit) {
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Text("Please select or create a To-Do List to get started.", style = MaterialTheme.typography.h6)
+                    Text(
+                        "Please select or create a To-Do List to get started.",
+                        style = MaterialTheme.typography.h6
+                    )
                     Spacer(modifier = Modifier.height(16.dp))
                     Button(onClick = { showAddListDialog = true }) {
                         Text("Create New List")
@@ -318,7 +324,11 @@ fun ToDoAppContent(viewModel: TodoViewModel, onLogout: () -> Unit) {
             ModalDrawer(
                 drawerContent = {
                     Column(modifier = Modifier.fillMaxSize()) {
-                        Text("Your Lists", style = MaterialTheme.typography.h5, modifier = Modifier.padding(16.dp))
+                        Text(
+                            "Your Lists",
+                            style = MaterialTheme.typography.h5,
+                            modifier = Modifier.padding(16.dp)
+                        )
                         Divider()
                         LazyColumn {
                             items(todoLists) { list ->
@@ -332,7 +342,11 @@ fun ToDoAppContent(viewModel: TodoViewModel, onLogout: () -> Unit) {
                                     text = { Text(list.name) },
                                     icon = {
                                         if (selectedList?.listId == list.listId) {
-                                            Icon(Icons.Default.List, contentDescription = "Selected List", tint = MaterialTheme.colors.primary)
+                                            Icon(
+                                                Icons.Default.List,
+                                                contentDescription = "Selected List",
+                                                tint = MaterialTheme.colors.primary
+                                            )
                                         } else {
                                             Icon(Icons.Default.List, contentDescription = "List")
                                         }
@@ -472,29 +486,29 @@ fun TodoItemCard(
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    MyToDoAppTheme {
-        // For preview, provide dummy data/state
-        // This preview won't run a full app with database/Firebase
-        ToDoAppContent(viewModel = viewModel(factory = TodoViewModelFactory(object : TodoDao {
-            // Dummy DAO for preview
-            override suspend fun insertTodoList(todoList: TodoList): Long = 0L
-            override suspend fun deleteTodoList(todoList: TodoList) {}
-            override fun getAllTodoLists(userId: String?): Flow<List<TodoList>> = flowOf(listOf(TodoList(name = "Personal", listId = 1)))
-            override suspend fun getTodoListById(listId: Long): TodoList? = null
-            override suspend fun insertTodoItem(todoItem: TodoItem) {}
-            override suspend fun updateTodoItem(todoItem: TodoItem) {}
-            override suspend fun deleteTodoItem(todoItem: TodoItem) {}
-            override fun getTodoItemsForList(listId: Long): Flow<List<TodoItem>> = flowOf(listOf(
-                TodoItem(task = "Sample Task 1", id = 1, listId = 1, isCompleted = false),
-                TodoItem(task = "Completed Task", id = 2, listId = 1, isCompleted = true)
-            ))
-            override suspend fun deleteAllItemsInList(listId: Long) {}
-        })), onLogout = {})
-    }
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun DefaultPreview() {
+//    ToDoAppTheme {
+//        // For preview, provide dummy data/state
+//        // This preview won't run a full app with database/Firebase
+//        ToDoAppContent(viewModel = viewModel(factory = TodoViewModelFactory(object : TodoDao {
+//            // Dummy DAO for preview
+//            override suspend fun insertTodoList(todoList: TodoList): Long = 0L
+//            override suspend fun deleteTodoList(todoList: TodoList) {}
+//            override fun getAllTodoLists(userId: String?): Flow<List<TodoList>> = flowOf(listOf(TodoList(name = "Personal", listId = 1)))
+//            override suspend fun getTodoListById(listId: Long): TodoList? = null
+//            override suspend fun insertTodoItem(todoItem: TodoItem) {}
+//            override suspend fun updateTodoItem(todoItem: TodoItem) {}
+//            override suspend fun deleteTodoItem(todoItem: TodoItem) {}
+//            override fun getTodoItemsForList(listId: Long): Flow<List<TodoItem>> = flowOf(listOf(
+//                TodoItem(task = "Sample Task 1", id = 1, listId = 1, isCompleted = false),
+//                TodoItem(task = "Completed Task", id = 2, listId = 1, isCompleted = true)
+//            ))
+//            override suspend fun deleteAllItemsInList(listId: Long) {}
+//        })), onLogout = {})
+//    }
+//}
 
 // Function to show a simple notification
 fun showNotification(context: Context, taskName: String) {
@@ -507,7 +521,7 @@ fun showNotification(context: Context, taskName: String) {
         .setPriority(NotificationCompat.PRIORITY_DEFAULT)
         .setAutoCancel(true) // Dismiss notification when tapped
 
-    with(NotificationManagerCompat.from(context)) {
+    with(NotificationManagerCompat.from(context)) @androidx.annotation.RequiresPermission(android.Manifest.permission.POST_NOTIFICATIONS) {
         // notificationId is a unique int for each notification that you must define
         notify(notificationId, builder.build())
     }
